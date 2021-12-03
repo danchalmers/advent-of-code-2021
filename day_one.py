@@ -23,7 +23,8 @@ def _numbers(file_name: str) -> List[int]:
 
 
 def _count_bigger(numbers: List[int]) -> int:
-    return len([y for x, y in zip(numbers, numbers[1:]) if y > x])
+    return len([y for x, y in zip(numbers, numbers[1:])
+                if y > x])
 
 
 def count_bigger_v2(file_name: str) -> int:
