@@ -1,8 +1,8 @@
 from typing import List
 
 
-TEST_FILE = 'test-1-1.txt'
-REAL_FILE = 'input-1-1.txt'
+TEST_FILE = 'test-1.txt'
+REAL_FILE = 'input-1.txt'
 
 
 def count_bigger_v1(file_name: str) -> int:
