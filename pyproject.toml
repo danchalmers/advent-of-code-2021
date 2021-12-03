@@ -5,7 +5,8 @@ description = ""
 authors = ["Dan Chalmers <danc@brandwatch.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
+pipe = "^1.6.0"
 
 [tool.poetry.dev-dependencies]
 
