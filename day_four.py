@@ -13,7 +13,7 @@ Score = int
 class Board:
     def __init__(self, rows: list[Number]):
         self.rows = rows
-        self.columns = [[row [idx] for row in rows] for idx in range(len(rows[0]))]
+        self.columns = [[row[idx] for row in rows] for idx in range(len(rows[0]))]
 
     @staticmethod
     def _filter(values: list[list[Number]], number: Number) -> list[list[Number]]:
@@ -62,7 +62,7 @@ def _play_turn(turn: Number, boards: list[Board]) -> tuple[list[Board], Optional
     return boards, score
 
 
-def play_bingo(file_name: str):
+def win_bingo(file_name: str):
     numbers_to_call, boards = _read_file(file_name)
     for turn in numbers_to_call:
         boards, score = _play_turn(turn, boards)
@@ -78,9 +78,10 @@ def loose_bingo(file_name: str):
         boards, score = _play_turn(turn, boards)
         if not boards:
             break
-    print(f"winning score {score}")
+    print(f"loosing score {score}")
     return score
 
 
 if __name__ == "__main__":
+    # win_bingo(REAL_FILE)
     loose_bingo(REAL_FILE)
