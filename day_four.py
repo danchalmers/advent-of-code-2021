@@ -52,6 +52,7 @@ def _read_file(file_name: str) -> tuple[list[Number], list[Board]]:
 
 
 def _play_turn(turn: Number, boards: list[Board]) -> tuple[list[Board], Optional[Score]]:
+    print(f"playing {turn}")
     score = None
     for board in boards:
         won = board.play(turn)
@@ -63,9 +64,7 @@ def _play_turn(turn: Number, boards: list[Board]) -> tuple[list[Board], Optional
 
 def play_bingo(file_name: str):
     numbers_to_call, boards = _read_file(file_name)
-    print(f"playing {numbers_to_call}")
     for turn in numbers_to_call:
-        print(f"playing {turn}")
         boards, score = _play_turn(turn, boards)
         if score is not None:
             break
@@ -75,9 +74,7 @@ def play_bingo(file_name: str):
 
 def loose_bingo(file_name: str):
     numbers_to_call, boards = _read_file(file_name)
-    print(f"playing {numbers_to_call}")
     for turn in numbers_to_call:
-        print(f"playing {turn}")
         boards, score = _play_turn(turn, boards)
         if not boards:
             break
