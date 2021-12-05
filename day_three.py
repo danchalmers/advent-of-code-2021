@@ -56,7 +56,6 @@ def count_filter(input: list[VALUE], bit_width: BIT_WIDTH, op: operator):
     return remainder[0]
 
 
-
 def day_three_part_two(file_name: str):
     lines, bit_width = _bin_lines(file_name)
     oxygen = count_filter(lines, bit_width, operator.ge)
