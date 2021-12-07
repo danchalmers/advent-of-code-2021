@@ -1,16 +1,10 @@
 from collections import defaultdict
 
+from common import count_values_in_file_list
+
 
 TEST_FILE = 'test-6.txt'
 REAL_FILE = 'input-6.txt'
-
-
-def initial_fish(file_name: str) -> dict[int, int]:
-    fish_count = defaultdict(int)
-    with open('data/' + file_name, 'r') as f:
-        for x in f.readline().split(','):
-            fish_count[int(x)] += 1
-    return fish_count
 
 
 def one_day(fish_count: dict[int, int]) -> dict[int, int]:
@@ -25,7 +19,7 @@ def one_day(fish_count: dict[int, int]) -> dict[int, int]:
 
 
 def simulate_breeding(file_name: str, days: int):
-    fish_count = initial_fish(file_name)
+    fish_count = count_values_in_file_list(file_name)
     for i in range(days):
         fish_count = one_day(fish_count)
     print(sum(fish_count.values()))
