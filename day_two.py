@@ -1,4 +1,4 @@
-from collections.abc import Iterable
+from typing import Iterable
 
 
 TEST_FILE = 'test-2.txt'

@@ -4,22 +4,11 @@ from collections import deque
 from pipe import map, where, permutations, dedup, sort
 from operator import xor
 
+from common import load_grid, Location, Height, Coordinate, Map
+
 
 TEST_FILE = 'test-9.txt'
 REAL_FILE = 'input-9.txt'
-
-Location = int
-Height = int
-Coordinate = tuple[Location, Location]
-Map = list[list[Height]]
-
-
-def load_map(file_name: str) -> tuple[Map, Location, Location]:
-    rows = []
-    with open('data/' + file_name, 'r') as f:
-        for line in f.readlines():
-            rows.append([int(c) for c in line if c.isdigit()])
-    return rows, len(rows[0]), len(rows)
 
 
 def possible_coords(x_size: Location, y_size: Location) -> list[Coordinate]:
@@ -80,6 +69,6 @@ def part_two(floor_map: Map, x_size: Location, y_size: Location):
 
 
 if __name__ == "__main__":
-    floor_map, x_size, y_size = load_map(REAL_FILE)
+    floor_map, x_size, y_size = load_grid(REAL_FILE)
     part_one(floor_map, x_size, y_size)
     part_two(floor_map, x_size, y_size)

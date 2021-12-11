@@ -2,11 +2,10 @@ from collections import Counter
 from typing import Iterable
 from pipe import map, where, chain
 
+from common import Coordinate
 
 TEST_FILE = 'test-5.txt'
 REAL_FILE = "input-5.txt"
-
-Coord = tuple[int, int]
 
 
 def _read_file(file_name: str) -> Iterable[str]:
@@ -16,12 +15,12 @@ def _read_file(file_name: str) -> Iterable[str]:
                 yield line
 
 
-def _pair_from_str(pair_text: str) -> Coord:
+def _pair_from_str(pair_text: str) -> Coordinate:
     xy = pair_text.strip().split(',')
     return int(xy[0]), int(xy[1])
 
 
-def _make_line(end1: Coord, end2: Coord) -> list[Coord]:
+def _make_line(end1: Coordinate, end2: Coordinate) -> list[Coordinate]:
     x_step = 1 if end1[0] < end2[0] else -1
     y_step = 1 if end1[1] < end2[1] else -1
     if end1[0] == end2[0]:
@@ -35,7 +34,7 @@ def _make_line(end1: Coord, end2: Coord) -> list[Coord]:
         ]
 
 
-def _file_to_points(file_name: str) -> list[tuple[Coord]]:
+def _file_to_points(file_name: str) -> list[tuple[Coordinate]]:
     return list(
         _read_file(file_name)
         | map(lambda line: line.split('->'))
