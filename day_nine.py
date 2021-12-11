@@ -19,8 +19,7 @@ def adjacents(loc: Coordinate, x_size: Location, y_size: Location) -> list[Coord
     x, y = loc[0], loc[1]
     return list(
         [-1, 0, 1]
-        | permutations
-        | dedup()
+        | permutations(2)
         | map(lambda xy: (xy[0] + x, xy[1] + y))
         | where(lambda xy: xor(xy[0] == x, xy[1] == y))
         | where(lambda xy: all([z >= 0 for z in xy]))
