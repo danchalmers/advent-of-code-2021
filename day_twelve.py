@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 from collections import defaultdict, Counter
-from typing import Iterable, Union
+from typing import Iterable, Union, Callable
 
-from pipe import where, map, t, traverse, tee, chain
 
 REAL_FILE = 'input-12.txt'
 
 CaveName = str
 CaveMap = dict[CaveName, list[CaveName]]
-CavePaths = Union[None, CaveName, list['CavePaths']]
+CavePath = list[CaveName]
 
 
 def make_map(defs: Iterable[str]) -> CaveMap:
@@ -25,54 +24,34 @@ def make_map(defs: Iterable[str]) -> CaveMap:
     return caves
 
 
-def find_paths_part_one_from(cave_map: CaveMap, start_from: CaveName, path_so_far: list[CaveName]) -> CavePaths:
-    if start_from == 'end':
-        return ['end']
-    prev_from_here = [y for x, y in zip(path_so_far, path_so_far[1:]) if x == start_from]
-    prev_small = [x for x in path_so_far if x[0].islower()]
-    paths = list(
-        cave_map[start_from]
-        | where(lambda dest: dest not in prev_from_here)
-        | where(lambda dest: dest not in prev_small)
-        | map(lambda f: find_paths_part_one_from(cave_map, f, path_so_far + [start_from]))
-    )
-    paths = start_from | t(paths)
-    return paths
+def find_paths_general(cave_map: CaveMap, max_small: int, fn: Callable, path_so_far: CavePath) -> list[CavePath]:
+    result = []
+    for dest in cave_map[path_so_far[-1]]:
+        match dest:
+            case 'end':
+                result.append(path_so_far + [dest])
+            case 'start':
+                continue
+            case _:
+                if dest[0].isupper() or len([c for c in path_so_far if c == dest]) < max_small:
+                    result.extend(fn(cave_map, path_so_far + [dest]))
+    return result
 
 
-def _one_prev_small_can_be_two(prev_small, dest):
-    twos = [x for x, c in prev_small.items() if c == 2]
-    dest_will_be_two = prev_small[dest] == 1
-    if dest_will_be_two:
-        return len(twos) == 0
+def find_paths_part_one(cave_map: CaveMap, path_so_far: CavePath) -> list[CavePath]:
+    return find_paths_general(cave_map, 1, find_paths_part_one, path_so_far)
+
+
+def find_paths_part_two(cave_map: CaveMap, path_so_far: CavePath) -> list[CavePath]:
+    small_counts = Counter([c for c in path_so_far if c[0].islower()])
+    if len([s for s, c in small_counts.items() if c == 2]) > 1:
+        return []
     else:
-        return len(twos) <= 1
+        return find_paths_general(cave_map, 2, find_paths_part_two, path_so_far)
 
 
-def find_paths_part_two_from(cave_map: CaveMap, start_from: CaveName, path_so_far: list[CaveName]) -> CavePaths:
-    if start_from == 'end':
-        return 'end'
-    prev_small = Counter([x for x in path_so_far if x[0].islower()])
-    if len([x for x, c in prev_small.items() if c >= 2]) > 1:
-        return None
-    paths = list(
-        cave_map[start_from]
-        | where(lambda dest: prev_small[dest] <= 1 and dest != 'start')
-        | where(lambda dest: _one_prev_small_can_be_two(prev_small, dest))
-        | map(lambda f: find_paths_part_two_from(cave_map, f, path_so_far + [start_from]))
-        | where(lambda ps: ps is not None)
-    )
-    paths = list(start_from | t(paths))
-    if 'end' in list(paths | traverse):
-        return paths
-
-
-def _count_paths(paths: CavePaths) -> int:
-    count = len(list(
-        paths
-        | traverse
-        | where (lambda n: n == 'end')
-    ))
+def _count_paths(paths: list[list[CaveName]]) -> int:
+    count = len(paths)
     print(f"found {count} paths")
     return count
 
@@ -80,15 +59,14 @@ def _count_paths(paths: CavePaths) -> int:
 def count_paths_part_one(defs: Iterable[str]) -> int:
     print("part one")
     cave_map = make_map(defs)
-    paths = find_paths_part_one_from(cave_map, 'start', [])
+    paths = find_paths_part_one(cave_map, ['start'])
     return _count_paths(paths)
 
 
 def count_paths_part_two(defs: Iterable[str]) -> int:
     print("part two")
     cave_map = make_map(defs)
-    paths = find_paths_part_two_from(cave_map, 'start', [])
-    print(paths)
+    paths = find_paths_part_two(cave_map, ['start'])
     return _count_paths(paths)
 
 
