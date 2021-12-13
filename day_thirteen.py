@@ -28,7 +28,7 @@ def read_instructions(file_name: str) -> tuple[set[Point], list[Fold]]:
 def _fold_one(point: Point, axis: int, line: int) -> Point:
     if point[axis] < line:
         return point
-    new_point = [p for p in point]
+    new_point = [p for p in point]  # can't modify a tuple
     new_point[axis] = 2 * line - point[axis]
     return tuple(new_point)
 
@@ -46,11 +46,10 @@ def part_one(file_name: str):
 
 
 def display(points: set[Point]):
-    max_x = max([p[0] for p in points])
-    max_y = max([p[1] for p in points])
-    dots = [['.' for x in range(max_x + 1)] for y in range(max_y + 1)]
-    for p in points:
-        dots[p[1]][p[0]] = '#'
+    dots = [[
+        '#' if (x, y) in points else '.'
+        for x in range(max([p[0] for p in points]) + 1)
+    ] for y in range(max([p[1] for p in points]) + 1)]
     for line in dots:
         print(''.join(line))
     print()
