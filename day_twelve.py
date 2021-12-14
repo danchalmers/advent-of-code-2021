@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict, Counter
-from typing import Iterable, Union, Callable
+from typing import Iterable, Callable
 
 
 REAL_FILE = 'input-12.txt'
