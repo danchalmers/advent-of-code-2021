@@ -8,6 +8,7 @@ authors = ["Dan Chalmers <danc@brandwatch.com>"]
 python = "^3.10"
 pipe = "^1.6.0"
 rich = "^10.15.2"
+cachetools = "^4.2.4"
 
 [tool.poetry.dev-dependencies]
 
