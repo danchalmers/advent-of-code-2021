@@ -1,11 +1,17 @@
 from collections import defaultdict
+from functools import lru_cache
+from operator import xor
+from typing import TypeVar
+
+from pipe import permutations, map, where
 
 Count = int
 
 Height = int
+MapParam = TypeVar('MapParam')
 Location = int
 Coordinate = tuple[Location, Location]
-Map = list[list[Height]]
+Map = list[list[MapParam]]
 
 
 def count_values_in_file_list(file_name: str) -> dict[int, int]:
@@ -23,3 +29,15 @@ def load_grid(file_name: str) -> tuple[Map, Location, Location]:
             rows.append([int(c) for c in line if c.isdigit()])
     return rows, len(rows[0]), len(rows)
 
+
+@lru_cache
+def adjacents(loc: Coordinate, x_size: Location, y_size: Location) -> list[Coordinate]:
+    x, y = loc[0], loc[1]
+    return list(
+        [-1, 0, 1]
+        | permutations(2)
+        | map(lambda xy: (xy[0] + x, xy[1] + y))
+        | where(lambda xy: xor(xy[0] == x, xy[1] == y))
+        | where(lambda xy: all([z >= 0 for z in xy]))
+        | where(lambda xy: xy[0] < x_size and xy[1] < y_size)
+    )

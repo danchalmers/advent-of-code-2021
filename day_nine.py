@@ -1,11 +1,9 @@
 import math
 from collections import deque
 
-from pipe import map, where, permutations, dedup, sort
-from operator import xor
+from pipe import map, where, sort
 
-from common import load_grid, Location, Height, Coordinate, Map
-
+from common import load_grid, Location, Height, Coordinate, Map, adjacents
 
 TEST_FILE = 'test-9.txt'
 REAL_FILE = 'input-9.txt'
@@ -13,18 +11,6 @@ REAL_FILE = 'input-9.txt'
 
 def possible_coords(x_size: Location, y_size: Location) -> list[Coordinate]:
     return [(x, y) for x in range(x_size) for y in range(y_size)]
-
-
-def adjacents(loc: Coordinate, x_size: Location, y_size: Location) -> list[Coordinate]:
-    x, y = loc[0], loc[1]
-    return list(
-        [-1, 0, 1]
-        | permutations(2)
-        | map(lambda xy: (xy[0] + x, xy[1] + y))
-        | where(lambda xy: xor(xy[0] == x, xy[1] == y))
-        | where(lambda xy: all([z >= 0 for z in xy]))
-        | where(lambda xy: xy[0] < x_size and xy[1] < y_size)
-    )
 
 
 def is_low_point(floor_map: Map, loc: Coordinate, adjs: list[Coordinate]):
