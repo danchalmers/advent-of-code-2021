@@ -1,7 +1,8 @@
 import unittest
+import time
 
-from day_fifteen import shortest_path
-
+from common import load_grid
+from day_fifteen import shortest_path, TEST_FILE, expand_map
 
 SMALLEST_GRID = [[1,2],[5,13]]
 BIGGER_GRID = [
@@ -29,6 +30,19 @@ class DatFifteenTestCase(unittest.TestCase):
     def test_biggest_grid(self):
         result = shortest_path(BIGGEST_GRID, 4, 4)
         self.assertEqual(16, result)
+
+    def test_example_map(self):
+        floor_map, x_size, y_size = load_grid(TEST_FILE, '../data/')
+        part_one = shortest_path(floor_map, x_size, y_size)
+        self.assertEqual(40, part_one)
+        big_map = expand_map(floor_map)
+        start_time = time.time_ns()
+        part_two = shortest_path(big_map, len(big_map[0]), len(big_map))
+        end_time = time.time_ns()
+        self.assertEqual(315, part_two)
+        duration_ms = (end_time - start_time) / 1_000_000
+        print(f"big map took {duration_ms}ms")
+
 
 
 if __name__ == '__main__':

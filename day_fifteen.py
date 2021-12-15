@@ -18,58 +18,64 @@ REAL_FILE = 'input-15.txt'
 
 
 class PriorityQueue(Generic[T]):
-    def __init__(self):
+    def __init__(self, initial_min_priority: float = math.inf):
         self.priority_queue = defaultdict(deque)
-        self.node_priority = {}
+        self.min_priority = initial_min_priority
 
     def put(self, value: T, priority: Priority):
         self.priority_queue[priority].append(value)
-        self.node_priority[value] = priority
+        self.min_priority = min(self.min_priority, priority)
 
     def empty(self) -> bool:
         return len(self.priority_queue.keys()) == 0
 
-    def pop_min(self) -> T:
+    def pop_min(self) -> tuple[T, Priority]:
         if self.empty():
             return None
-        min_priority = min(self.priority_queue.keys())
-        result = self.priority_queue[min_priority].pop()
-        if not self.priority_queue[min_priority]:
-            del self.priority_queue[min_priority]
-        del self.node_priority[result]
-        return result
+        result = self.priority_queue[self.min_priority].pop()
+        priority = self.min_priority
+        if not self.priority_queue[self.min_priority]:
+            del self.priority_queue[self.min_priority]
+            if not self.empty():
+                self.min_priority = sorted(self.priority_queue.keys())[0]
+        return result, priority
 
-    def set_priority(self, value: T, priority: float):
-        old_priority = self.node_priority[value]
-        self.priority_queue[old_priority].remove(value)
+    def set_priority(self, value: T, old_priority: Priority, new_priority: Priority):
         if not self.priority_queue[old_priority]:
             del self.priority_queue[old_priority]
-        self.priority_queue[priority].append(value)
-        self.node_priority[value] = priority
+        self.priority_queue[new_priority].append(value)
+        self.min_priority = min(self.min_priority, new_priority)
 
     def __repr__(self):
         return str(self.priority_queue.items())
 
 
+def _initial_distance_estimate(cost_map: Map[Cost], x: Location, y: Location) -> Cost:
+    return cost_map[y][x] + (x + y) * 9
+
 # Dijkstra, with a priority queue
 def shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
     target = (x_size - 1, y_size - 1)
-    distances = [[math.inf for x in range(x_size)] for y in range(y_size)]
+    distances = [[
+        _initial_distance_estimate(cost_map, x, y)
+        for x in range(x_size)
+    ] for y in range(y_size)
+    ]
     distances[START[1]][START[0]] = 0
     preds = [[None for x in range(x_size)] for y in range(y_size)]
-    pq = PriorityQueue()
+    pq = PriorityQueue(initial_min_priority=0)
     for x in range(x_size):
         for y in range(y_size):
             pq.put((x, y), distances[y][x])
 
     while not pq.empty():
-        from_node = pq.pop_min()
+        from_node, prioriy = pq.pop_min()
         for to_node in adjacents(from_node, x_size, y_size):
             alt = distances[from_node[1]][from_node[0]] + cost_map[to_node[1]][to_node[0]]
             if alt < distances[to_node[1]][to_node[0]]:
                 distances[to_node[1]][to_node[0]] = alt
                 preds[to_node[1]][to_node[0]] = from_node
-                pq.set_priority(to_node, alt)
+                pq.set_priority(to_node, prioriy, alt)
 
     distance = int(distances[target[1]][target[0]])
     print(f"shortest path distance {distance}")

@@ -22,9 +22,9 @@ def count_values_in_file_list(file_name: str) -> dict[int, int]:
     return pos_count
 
 
-def load_grid(file_name: str) -> tuple[Map, Location, Location]:
+def load_grid(file_name: str, path: str = 'data/') -> tuple[Map, Location, Location]:
     rows = []
-    with open('data/' + file_name, 'r') as f:
+    with open(path + file_name, 'r') as f:
         for line in f.readlines():
             rows.append([int(c) for c in line if c.isdigit()])
     return rows, len(rows[0]), len(rows)
