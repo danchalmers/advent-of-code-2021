@@ -4,8 +4,7 @@ from typing import Generic, TypeVar
 
 from cachetools import cached
 
-from common import Map, Location, adjacents, load_grid
-
+from common import Map, AxisSize, adjacents, load_grid, Location
 
 Cost = int
 T = TypeVar('T')
@@ -55,7 +54,7 @@ def _initial_distance_estimate(cost_map: Map[Cost], x: Location, y: Location) ->
 
 
 # Dijkstra, with a priority queue
-def _shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
+def _shortest_path(cost_map: Map[Cost], x_size: AxisSize, y_size: AxisSize) -> Cost:
     target = (x_size - 1, y_size - 1)
     distances = [[
         _initial_distance_estimate(cost_map, x, y)
@@ -82,7 +81,7 @@ def _shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> C
     return int(distances[target[1]][target[0]])
 
 
-def shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
+def shortest_path(cost_map: Map[Cost], x_size: AxisSize, y_size: AxisSize) -> Cost:
     distance = _shortest_path(cost_map, x_size, y_size)
     print(f"shortest path distance {distance}")
     return distance

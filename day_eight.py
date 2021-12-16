@@ -101,5 +101,5 @@ def do_part_two(file_name: str) -> int:
 
 
 if __name__ == "__main__":
-    # do_part_one(TEST_FILE)
+    do_part_one(REAL_FILE)
     do_part_two(REAL_FILE)

@@ -3,13 +3,16 @@ from collections import deque
 
 from pipe import map, where, sort
 
-from common import load_grid, Location, Height, Coordinate, Map, adjacents
+from common import load_grid, AxisSize, Coordinate, Map, adjacents
+
+
+Height = int
 
 TEST_FILE = 'test-9.txt'
 REAL_FILE = 'input-9.txt'
 
 
-def possible_coords(x_size: Location, y_size: Location) -> list[Coordinate]:
+def possible_coords(x_size: AxisSize, y_size: AxisSize) -> list[Coordinate]:
     return [(x, y) for x in range(x_size) for y in range(y_size)]
 
 
@@ -22,7 +25,7 @@ def risk_level(height: Height) -> int:
     return 1 + height
 
 
-def part_one(floor_map: Map, x_size: Location, y_size: Location):
+def part_one(floor_map: Map, x_size: AxisSize, y_size: AxisSize):
     risk = sum(
         possible_coords(x_size, y_size)
         | where(lambda loc: is_low_point(floor_map, loc, adjacents(loc, x_size, y_size)))
@@ -32,7 +35,7 @@ def part_one(floor_map: Map, x_size: Location, y_size: Location):
     print(f"risk level {risk}")
 
 
-def baisin(floor_map: Map, x_size: Location, y_size: Location, low_point: Coordinate) -> list[Coordinate]:
+def baisin(floor_map: Map, x_size: AxisSize, y_size: AxisSize, low_point: Coordinate) -> list[Coordinate]:
     result = []
     work_queue = deque([low_point])
     while work_queue:
@@ -43,7 +46,7 @@ def baisin(floor_map: Map, x_size: Location, y_size: Location, low_point: Coordi
     return result
 
 
-def part_two(floor_map: Map, x_size: Location, y_size: Location):
+def part_two(floor_map: Map, x_size: AxisSize, y_size: AxisSize):
     prod = math.prod(list(
         possible_coords(x_size, y_size)
         | where(lambda loc: is_low_point(floor_map, loc, adjacents(loc, x_size, y_size)))

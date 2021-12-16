@@ -3,7 +3,7 @@ from __future__ import annotations
 from pipe import permutations, dedup, where, map, chain
 from rich import print
 
-from common import load_grid, Coordinate, Location
+from common import load_grid, Coordinate, AxisSize
 
 
 TEST_FILE = 'test-11.txt'
@@ -39,7 +39,7 @@ class Octopus:
 Octopods = list[list[Octopus]]
 
 
-def adjacent_inc_diagonals(loc: Coordinate, x_size: Location, y_size: Location) -> list[Coordinate]:
+def adjacent_inc_diagonals(loc: Coordinate, x_size: AxisSize, y_size: AxisSize) -> list[Coordinate]:
     x, y = loc[0], loc[1]
     return list(
         [-1, -1, 0, 1, 1]
@@ -51,7 +51,7 @@ def adjacent_inc_diagonals(loc: Coordinate, x_size: Location, y_size: Location) 
     )
 
 
-def setup(file_name: str) -> tuple[Octopods, Location, Location]:
+def setup(file_name: str) -> tuple[Octopods, AxisSize, AxisSize]:
     energy_grid, x_size, y_size = load_grid(file_name)
     octopods = [[Octopus(e) for e in row] for row in energy_grid]
     for y in range(y_size):
