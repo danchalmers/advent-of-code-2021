@@ -53,8 +53,9 @@ class PriorityQueue(Generic[T]):
 def _initial_distance_estimate(cost_map: Map[Cost], x: Location, y: Location) -> Cost:
     return cost_map[y][x] + (x + y) * 9
 
+
 # Dijkstra, with a priority queue
-def shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
+def _shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
     target = (x_size - 1, y_size - 1)
     distances = [[
         _initial_distance_estimate(cost_map, x, y)
@@ -76,8 +77,13 @@ def shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Co
                 distances[to_node[1]][to_node[0]] = alt
                 preds[to_node[1]][to_node[0]] = from_node
                 pq.set_priority(to_node, prioriy, alt)
+            if to_node == target:
+                return int(distances[target[1]][target[0]])
+    return int(distances[target[1]][target[0]])
 
-    distance = int(distances[target[1]][target[0]])
+
+def shortest_path(cost_map: Map[Cost], x_size: Location, y_size: Location) -> Cost:
+    distance = _shortest_path(cost_map, x_size, y_size)
     print(f"shortest path distance {distance}")
     return distance
 
