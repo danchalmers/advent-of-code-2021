@@ -58,6 +58,45 @@ class DaySixteenTestCase(unittest.TestCase):
         version_sum = packet.version_sum()
         self.assertEqual(31, version_sum)
 
+    def test_value_eg1(self):
+        packet, _ = Packet.make_packet_from_hex('C200B40A82')
+        value = packet.value()
+        self.assertEqual(3, value)
+
+    def test_value_eg2(self):
+        packet, _ = Packet.make_packet_from_hex('04005AC33890')
+        value = packet.value()
+        self.assertEqual(54, value)
+
+    def test_value_eg3(self):
+        packet, _ = Packet.make_packet_from_hex('880086C3E88112')
+        value = packet.value()
+        self.assertEqual(7, value)
+
+    def test_value_eg4(self):
+        packet, _ = Packet.make_packet_from_hex('CE00C43D881120')
+        value = packet.value()
+        self.assertEqual(9, value)
+
+    def test_value_eg5(self):
+        packet, _ = Packet.make_packet_from_hex('D8005AC2A8F0')
+        value = packet.value()
+        self.assertEqual(1, value)
+
+    def test_value_eg6(self):
+        packet, _ = Packet.make_packet_from_hex('F600BC2D8F')
+        value = packet.value()
+        self.assertEqual(0, value)
+
+    def test_value_eg7(self):
+        packet, _ = Packet.make_packet_from_hex('9C005AC2F8F0')
+        value = packet.value()
+        self.assertEqual(0, value)
+
+    def test_value_eg8(self):
+        packet, _ = Packet.make_packet_from_hex('9C0141080250320F1802104A08')
+        value = packet.value()
+        self.assertEqual(1, value)
 
 if __name__ == '__main__':
     unittest.main()

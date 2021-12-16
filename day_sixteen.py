@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from functools import reduce
+from operator import mul
 from typing import Optional
 
 from pipe import reverse
 
 
 Bits = list[int]
-
 
 REAL_FILE = 'input-16.txt'
 
@@ -99,7 +100,7 @@ class OperatorPacket(Packet):
             remaining_bits = remaining_bits[15:]
             sub_packet_bits = remaining_bits[:length]
             remaining_bits = remaining_bits[length:]
-            while len(sub_packet_bits) > 1:
+            while sub_packet_bits:
                 p, sub_packet_bits = Packet.make_packet_from_bin(sub_packet_bits)
                 self.packets.append(p)
         else:
@@ -111,7 +112,25 @@ class OperatorPacket(Packet):
         return self, remaining_bits
 
     def value(self) -> int:
-        return 0
+        values = [p.value() for p in self.packets]
+        match self.type_id:
+            case 0:
+                return sum(values)
+            case 1:
+                return reduce(mul, values)
+            case 2:
+                return min(values)
+            case 3:
+                return max(values)
+            case 5:
+                return 1 if values[0] > values[1] else 0
+            case 6:
+                return 1 if values[0] < values[1] else 0
+            case 7:
+                return 1 if values[0] == values[1] else 0
+            case _:
+                print("undefined type!")
+                return 0
 
     def sub_packets(self) -> list[Packet]:
         return self.packets
@@ -123,17 +142,20 @@ class OperatorPacket(Packet):
         return f"Operator(v{self.version} = {self.sub_packets()})"
 
 
-def load_from_file(file_name: str) -> Packet:
+def load_from_file(file_name: str) -> tuple[Packet, list[int]]:
     with open('data/' + file_name, 'r') as f:
         return Packet.make_packet_from_hex(f.readline().strip())
 
 
-def part_one(file_name: str):
-    packet, _ = load_from_file(file_name)
+def part_one(packet: Packet):
     print(f"part one version sum: {packet.version_sum()}")
 
 
+def part_two(packet: Packet):
+    print(f"part two value: {packet.value()}")
 
 
 if __name__ == "__main__":
-    part_one(REAL_FILE)
+    packet, _ = load_from_file(REAL_FILE)
+    part_one(packet)
+    part_two(packet)
