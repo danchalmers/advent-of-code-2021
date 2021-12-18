@@ -1,7 +1,6 @@
 from typing import Callable
 
-from common import count_values_in_file_list, Count
-
+from common import count_values_in_file_list, Count, triangular_number
 
 TEST_FILE = 'test-7.txt'
 REAL_FILE = 'input-7.txt'
@@ -12,8 +11,7 @@ def constant_fuel_movement_cost(positions: dict[int, int], to_position: int) -> 
 
 
 def _single_part_two_fuel_movement_cost(x: int, y: int) -> float:
-    difference = abs(x - y)
-    return (difference * (difference + 1)) / 2
+    return triangular_number(abs(x - y))
 
 
 def part_two_fuel_movement_cost(positions: dict[int, int], to_position: int) -> int:

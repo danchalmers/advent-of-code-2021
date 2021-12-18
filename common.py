@@ -42,3 +42,8 @@ def adjacents(loc: Coordinate, x_size: AxisSize, y_size: AxisSize) -> list[Coord
         | where(lambda xy: all([z >= 0 for z in xy]))
         | where(lambda xy: xy[0] < x_size and xy[1] < y_size)
     )
+
+
+@lru_cache()
+def triangular_number(x: int) -> int:
+    return (x * (x + 1)) / 2
